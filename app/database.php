@@ -1,5 +1,5 @@
 <?php 
-class Conexion extends mysqli{
+class Database extends mysqli{
 	public function __construct(){
         try {
         	parent::__construct(HOST_NAME, US_NAME, PSSWORD, DB_NAME);

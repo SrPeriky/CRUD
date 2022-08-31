@@ -2,20 +2,27 @@
 @session_start();
 require_once('./app/config.php');
 require_once('./app/database.php');
+require_once('./app/sesion.php');
+require_once('./app/app.php');
 
 // Todo esta lógica hara el papel de un FrontController
-$controller = isset($_REQUEST['c']) ? strtolower($_REQUEST['c']) : DEFAULT_CONTROLLER;
-$accion = isset($_REQUEST['a']) ? $_REQUEST['a'] : DEFAULT_ACTION;
+$controller = isset($_GET['c']) ? strtolower($_GET['c']) : DEFAULT_CONTROLLER;
+$action = isset($_GET['a']) && $_GET['a'] != '' ? $_GET['a'] : DEFAULT_ACTION;
 
-if (file_exists("controller/" .$controller. ".php")) {
+// echo $controller . "<br>" . $action;
+
+define('CONTROLLER', $controller);
+
+if (file_exists("controller/" .$controller. ".php")) {	
+	$controller = ucwords($controller);	
 	require_once "./controller/" .$controller. ".php";
-	$controller = ucwords($controller);
 	$controller = new $controller;
-	if(method_exists($controller, strtolower($accion))){
-		call_user_func(array( $controller, $accion ));
+	if(method_exists($controller, strtolower($action))){
+		call_user_func(array( $controller, $action ));
+	} else{
+		echo MSG_ERROR_404;
 	}
 } else {
 	echo MSG_ERROR_404;
 }
-
- ?>
+?>
