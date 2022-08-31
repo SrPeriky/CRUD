@@ -2,7 +2,6 @@
 @session_start();
 require_once('./app/config.php');
 require_once('./app/database.php');
-require_once('./app/sesion.php');
 require_once('./app/app.php');
 
 // Todo esta lógica hara el papel de un FrontController

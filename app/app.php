@@ -15,6 +15,14 @@ class App {
             return $model;
         }
     }
+    public function library($library)
+    {
+        if (file_exists("./app/library/" .$library. ".php")){
+            require_once "./app/library/" .$library. ".php";
+            $library = new $library;
+            return $library;
+        }
+    }
     
 }
 ?>
