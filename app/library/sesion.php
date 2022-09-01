@@ -6,7 +6,7 @@ class Sesion {
 		try {
 			$this->TOKEN = @$_SESSION['TOKEN'];
 			if(!isset($_SESSION[$this->TOKEN])) return false;
-		    if($_SESSION[$this->TOKEN] != (MD5($_SESSION['ID'].$_SESSION['NOM']))) return false;
+		    if($_SESSION[$this->TOKEN] != (MD5($_SESSION['ID']))) return false;
 		    if(!isset($_SESSION['expire'])) return false;
 		    if(time() < $_SESSION['expire']) $_SESSION['expire'] = time() + (3600*60); else return false;
 		    return true;
@@ -23,7 +23,6 @@ class Sesion {
                 $params["secure"], $params["httponly"]
             );
         } session_destroy();
-        return true;
 	}
 
 	public function new($id_user)
@@ -32,15 +31,16 @@ class Sesion {
 			$_SESSION['time'] = time();
             $_SESSION['expire'] = $_SESSION['time'] + (3600*4600*5600*6600);
             $this->TOKEN = md5(date('Y-m-d H:i:s'));
-            $_SESSION['TOKEN'] = $TOKEN;
-            $_SESSION[$TOKEN] = MD5($id_user);
+            $_SESSION['ID'] = $id_user;
+            $_SESSION['TOKEN'] = $this->TOKEN;
+            $_SESSION[$this->TOKEN] = MD5($id_user);
             return true;
 		} return false;
 	}
 
-	public function redirectTo($c = DEFAULT_CONTROLLER)
+	public function redirectTo($c = DEFAULT_CONTROLLER, $a=null, $important=false)
 	{
-		if(CONTROLLER != $c) header('Location: ./?c='.$c);
+		if(CONTROLLER != $c || $important) header('Location: '.BASE_URL.$c.'/'.$a);
     }
 }
 ?>

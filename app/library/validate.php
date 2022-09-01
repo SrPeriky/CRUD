@@ -33,19 +33,19 @@ class Validate
         return (preg_match($regexFecha, $date)) ? true : false;
 	}
 
-	public function removeBlankSpaces($srt='')
+	public function removeBlankSpaces($str='')
 	{
 		$str=trim($str);
         $str = stripslashes($str);
-        $srt=htmlspecialchars($str);
+        $str=htmlspecialchars($str);
         return $str;
 	}
 
-	public function firstUpper($srt='')
+	public function firstUpper($str='')
 	{
 		$str=trim($str);
 		$str = stripslashes($str);
-		$srt=htmlspecialchars($str);
+		$str=htmlspecialchars($str);
 		$str = ucwords($str);
 		return $str;
 	}

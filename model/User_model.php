@@ -1,21 +1,27 @@
 <?PHP
 class User_model extends Database{
-	function logIn($email, $password){
+	function getUserActive($email, $password){
         try {
-            $sql = "SELECT * FROM user WHERE email = '$email' AND clave = '$password' AND activo = 1";   
-            $result = $this->query($sql);
-            //$result = $this->row($result)
+        	$this->connect();
+            $sql = "SELECT id FROM user WHERE email = '$email' AND clave = '$password' AND activo = 1";   
+            $result = $this->getDataSingle($sql);
+            $this->close();
             return $result;
         } catch (\Throwable $th) { }
     }
 
-    public function save($nom, $emal, $password)
+    public function saveUser($nom, $emal, $clave)
     {
     	try {
-            $sql = "INSERT INTO user (nom, email, clave) VALUES ('$nom', '$emal', '$password'); ";   
-            $result = $this->query($sql);
-            $result = mysqli_affected_rows($result);
-            return $result;
+        	$this->connect();
+            $l = $this->insert('user', array(
+            	'clave' => $clave,
+            	'email' => $emal,
+            	'nom' => $nom,
+            	'activo' => true
+            )); $id = $this->getLastId();
+            $this->close();
+            return ($l) ? $id : false;
         } catch (\Throwable $th) { }
     }
 }
