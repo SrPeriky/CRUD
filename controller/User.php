@@ -13,7 +13,7 @@ class User extends App{
             $this->view('head');
             $this->view('login');
             $this->view('foot');
-        } else $this->Sesion->redirectTo('home');;
+        } else $this->Sesion->redirectTo('Task');;
     }
 
     public function checkUser()
@@ -41,8 +41,8 @@ class User extends App{
             if ($id_user) {
                if(!$this->Sesion->new($id_user)) echo json_encode("Error al crear la session");
                else echo json_encode(true);
-            } echo json_encode("Usuario incorrecto");
-       } else $this->Sesion->redirectTo('home');
+            } else echo json_encode("Usuario incorrecto");
+       } else $this->Sesion->redirectTo('Task');
     }
 
     public function Logout()

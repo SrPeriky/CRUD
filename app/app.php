@@ -5,6 +5,7 @@ class App {
     }
     public function view($view, $data = null){
         if (file_exists("./view/" .$view. ".php")){
+            
             require_once('./view/'.$view.'.php');
         } 
     }

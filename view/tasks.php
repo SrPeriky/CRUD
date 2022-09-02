@@ -1,5 +1,32 @@
 
 <div id="app" class="container p-5">
+	<!-- Modal -->
+	<div class="modal fade" id="appModal" tabindex="-1" aria-labelledby="appModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="appModalLabel">Modal title</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	      	<form>
+		        <div class="form-floating mb-3">
+				  <input type="text" class="form-control" v-model="titulo" placeholder="Titulo">
+				  <label for="floatingInput">Titulo</label>
+				</div>
+				<div class="form-floating">
+				  <input type="text" class="form-control" v-model="detalles" placeholder="Detalles">
+				  <label for="floatingPassword">Detalles</label>
+				</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+	        <button type="submit" @click="newTask" type="button" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+	      </div>
+	  		</form>
+	    </div>
+	  </div>
+	</div>
 	<table class="table">
 	  <thead>
 	    <tr>
@@ -7,55 +34,128 @@
 	      <th scope="col">Tack</th>
 	      <th scope="col">details</th>
 	      <th scope="col">fecha</th>
-	      <th class="text-center" scope="col"><i class="fa-sharp fa-solid fa-eye"></i></th>
 	      <th class="text-center" scope="col"><i class="fa-solid fa-pen-to-square"></i></th>
 	      <th class="text-center" scope="col"><i class="fa-solid fa-trash"></i></th>
 	      <th class="text-center" scope="col"><i class="fa-solid fa-circle-check"></i></th>
 	    </tr>
 	  </thead>
 	  <tbody>
-	    <tr v-for="(task, index) in tasks" class="alert" v-bind:class="{'alert-success': task.activo }">
+	    <tr v-for="(task, index) in tasks" class="alert" v-bind:class="{'alert-success': task.activo===0 }">
 	      <th scope="row">{{ index+1 }}</th>
-	      <td> {{task.title}} </td>
-	      <td>{{task.detalle}}</td>
-	      <td>{{task.fecha}}</td>
-	      <td class="text-center" scope="row"><button class="btn btn-sm btn-info"><i class="fa-sharp fa-solid fa-eye"></i></button></td>
-	      <td class="text-center" scope="row"><button class="btn btn-sm btn-warning"><i class="fa-solid fa-pen-to-square"></i></button></td>
-	      <td class="text-center" scope="row"><button class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button></td>
+	      <td>
+	      	<input type="text" 
+	      	:disabled="task.edit === 0" 
+	      	v-bind:class="{'form-control-plaintext': task.edit ===0, 'form-control': task.edit===1 }" 
+	      	v-model="task.title">
+	      </td>
+	      <td>
+	      	<input type="text" 
+	      	:disabled="task.edit === 0" 
+	      	v-bind:class="{'form-control-plaintext': task.edit ===0, 'form-control': task.edit===1 }" 
+	      	v-model="task.detalle">
+	      </td>
+	      <td><input type="text" disabled class="form-control-plaintext" v-model="task.fecha"></td>
+	      
 	      <td class="text-center" scope="row">
-	      	<button class="btn btn-sm " v-bind:class="{'btn-success': !task.activo, 'btn-dark': task.activo }"><i class="fa-solid fa-circle-check"></i></button>
+	      	<button @click="editTask(task.id, index)" class="btn btn-sm " v-bind:class="{'btn-warning': task.edit===0, 'btn-success': task.edit===1 }">
+	      		<i class="fa-solid " v-bind:class="{'fa-pen-to-square': task.edit===0, 'fa-floppy-disk': task.edit===1 }"></i>
+	      	</button>
+	      </td>
+	      <td class="text-center" scope="row">
+	      	<button @click="deleteTask(task.id, index)" class="btn btn-sm btn-danger">
+	      		<i class="fa-solid fa-trash"></i>
+	      	</button>
+	      </td>
+	      <td class="text-center" scope="row">
+	      	<button @click="checkTask(task.id, index)" class="btn btn-sm " v-bind:class="{'btn-info': task.activo===1, 'btn-dark': task.activo===0 }">
+	      		<i class="fa-solid " v-bind:class="{'fa-circle-check': task.activo===1, 'fa-rotate-left': task.activo===0 }"></i>
+	      	</button>
 	      </td>
 	    </tr>
 	  </tbody>
 	</table>
 </div>
-			
-				
-			
 
 <script type="text/javascript">
 	const app = new Vue({
 		el: '#app',
 		data:{
+			titulo: '',
+			detalles: '',
 			tasks: [
 			<?php foreach ($data as $task):?>
-			{id: <?php echo $task['id'];  ?>, title: '<?php echo $task['titulo'];  ?>', detalle: '<?php echo $task['detalle'];  ?>', fecha: '<?php echo $task['fecha'];  ?>', activo: <?php echo $task['activo'];  ?>},
+				{id: <?php echo $task['id'];  ?>, title: '<?php echo $task['titulo'];  ?>', detalle: '<?php echo $task['detalle'];  ?>', fecha: '<?php echo $task['fecha'];  ?>', activo: <?php echo $task['activo'];  ?>, edit: 0},
 			<?php endforeach; ?>
 			],
 		},
 		methods:{
-			viewTask (id) {
-				console.log("viewTask");
+			setTask (id, titulo, detalle, activo) {
+				$.ajax({
+					type: "POST",
+					mimeType: 'text/html; charset=utf-8',
+					method: 'POST',
+			        dataType: "json",
+			        url: base_url+'Task/setTask',
+			        cache: false,
+			        data: "id="+id+'&titulo='+titulo+'&detalle='+detalle+'&activo='+activo,
+			        success: function(respuesta)
+			        {
+			        	console.log("save");
+			        }
+			    });
 			},
-			editTask (id) {
-				console.log("viewTask");
+			newTask () {
+				$.ajax({
+					type: "POST",
+					mimeType: 'text/html; charset=utf-8',
+					method: 'POST',
+			        dataType: "json",
+			        url: base_url+'Task/newTask',
+			        cache: false,
+			        data: 'titulo='+app.titulo+'&detalle='+app.detalle,
+			        success: function(respuesta)
+			        {
+			        	if (respuesta!=null) {
+			        		app.tasks.push({
+			        			id: respuesta.id,
+								title: respuesta.titulo,
+								detalle: respuesta.detalle,
+								fecha: respuesta.fecha,
+								activo: respuesta.activo,
+								edit: 0,
+			        		});
+			        		app.titulo = '';
+							app.detalles = '';
+			        	} 
+			        }
+			    });
+			}, 
+			editTask (id, i) {
+				console.log("editTask: "+id);
+				if (this.tasks[i].edit===1) this.setTask(this.tasks[i].id, this.tasks[i].title, this.tasks[i].detalle, this.tasks[i].activo);
+				this.tasks[i].edit = (this.tasks[i].edit==0) ? 1 : 0;
 			},
-			deleteTask (id) {
-				console.log("viewTask");
+			deleteTask (id, i) {
+				$.ajax({
+					type: "POST",
+					mimeType: 'text/html; charset=utf-8',
+					method: 'POST',
+			        dataType: "json",
+			        url: base_url+'Task/removeTask',
+			        cache: false,
+			        data: "id="+id,
+			        success: function(respuesta)
+			        {
+			        	if(!respuesta) app.tasks.splice(i, 1);
+			        }
+			    });
 			},
-			checkTask (id) {
-				console.log("viewTask");
+			checkTask (id, i) {
+				console.log("deleteTask: "+i);
+				this.tasks[i].activo = (this.tasks[i].activo==0) ? 1 : 0;
+				this.setTask(this.tasks[i].id, this.tasks[i].title, this.tasks[i].detalle, this.tasks[i].activo);
 			},
+
 		}
 	});
 </script>

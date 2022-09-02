@@ -139,6 +139,8 @@ class Database {
             throw new Exception($error[2]);
         }
     }
+
+    
  
     function close()
     {
