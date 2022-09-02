@@ -2,19 +2,24 @@
 
 Un gestor de tareas muy cencillo y rápido
 
-## Authors
+## Autores
 
 - [@SrPeriky](https://www.github.com/SrPeriky)
 
 
 ## Despliegue
 
-To deploy this project run
+Para desplegar este proyecto, ejecute
 
 ```bash
   git clone https://github.com/SrPeriky/CRUD.git
 ```
 
+```bash
+  cd CRUD
+```
+
+Para desplegar este proyecto, ejecute
 
 ## Documentation
 
