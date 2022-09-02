@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 31-08-2022 a las 00:22:26
+-- Tiempo de generación: 02-09-2022 a las 21:24:52
 -- Versión del servidor: 10.4.24-MariaDB
 -- Versión de PHP: 8.1.6
 
@@ -32,9 +32,19 @@ CREATE TABLE `task` (
   `id_user` int(11) NOT NULL,
   `titulo` varchar(30) NOT NULL,
   `detalle` varchar(60) NOT NULL,
-  `fescha` varchar(10) NOT NULL,
+  `fecha` varchar(10) NOT NULL,
   `activo` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `task`
+--
+
+INSERT INTO `task` (`id`, `id_user`, `titulo`, `detalle`, `fecha`, `activo`) VALUES
+(1, 180, 'titulo', 'dfsfsdf', '1/08/2022', 1),
+(5, 181, 'fsdfsd', 'fff', '2/09/2022', 0),
+(7, 181, 'sdf', 'undefined', '2/09/2022', 1),
+(8, 181, 'dsf', 'undefined', '2/09/2022', 0);
 
 -- --------------------------------------------------------
 
@@ -47,8 +57,16 @@ CREATE TABLE `user` (
   `nom` varchar(30) NOT NULL,
   `email` varchar(40) NOT NULL,
   `clave` varchar(40) NOT NULL,
-  `activo` bit(1) NOT NULL
+  `activo` bit(1) NOT NULL DEFAULT b'1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `user`
+--
+
+INSERT INTO `user` (`id`, `nom`, `email`, `clave`, `activo`) VALUES
+(180, 'd', 'periky@gmail.com', 'e319d1e0b37bd9c7c9921a287a411297', b'1'),
+(181, 'pollo', 'pollo@gmail.com', 'e319d1e0b37bd9c7c9921a287a411297', b'1');
 
 --
 -- Índices para tablas volcadas
@@ -75,13 +93,13 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT de la tabla `task`
 --
 ALTER TABLE `task`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=182;
 
 --
 -- Restricciones para tablas volcadas
