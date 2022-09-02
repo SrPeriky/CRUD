@@ -19,7 +19,15 @@ Para desplegar este proyecto, ejecute
   cd CRUD
 ```
 
-Para desplegar este proyecto, ejecute
+Configurar el archivo `CRUD/app/config.php`
+
+```javascript
+import Component from 'my-project'
+
+function App() {
+  return <Component />
+}
+```
 
 ## Documentation
 
