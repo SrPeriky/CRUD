@@ -15,18 +15,16 @@ Para desplegar este proyecto, ejecute
   git clone https://github.com/SrPeriky/CRUD.git
 ```
 
-```bash
-  cd CRUD
-```
-
 Configurar el archivo `CRUD/app/config.php`
 
-```javascript
-import Component from 'my-project'
+```php
+define('HOST_NAME', 'localhost');
+define('DB_NAME', 'prueba');
+define('US_NAME', 'root');
+define('PSSWORD', '');
 
-function App() {
-  return <Component />
-}
+...
+
 ```
 
 ## Documentation
