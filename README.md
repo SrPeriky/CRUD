@@ -14,8 +14,9 @@ Para desplegar este proyecto, ejecute
 ```bash
   git clone https://github.com/SrPeriky/CRUD.git
 ```
+Importar la base de datos `CRUD/prueba.sql`
 
-Configurar el archivo `CRUD/app/config.php`
+Configurar la conexion a la base de datos `CRUD/app/config.php`
 
 ```php
 define('HOST_NAME', 'localhost');
