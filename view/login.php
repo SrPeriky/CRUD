@@ -95,7 +95,7 @@ const app = new Vue({
     		processData:false,
     		dataType: 'json',
     		success: function(respuesta) {
-    			if(respuesta===true) location.href = base_url+'home';
+    			if(respuesta===true) location.href = base_url+'task';
     			else app.errors.push(respuesta);
     		},
     		error: function(jqXHR, textStatus, errorThrown) {
