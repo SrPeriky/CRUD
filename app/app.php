@@ -24,6 +24,11 @@ class App {
             return $library;
         }
     }
+
+    public function redirectTo($c = DEFAULT_CONTROLLER, $a=null, $important=false)
+    {
+        if(CONTROLLER != $c || $important) header('Location: '.BASE_URL.$c.'/'.$a);
+    }
     
 }
 ?>

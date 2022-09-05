@@ -1,11 +1,11 @@
 <?php
 class Task extends App {
-	private $Sesion, $Task_model;
+	private $Sesion, $Task_model, $StandardizeData;
 
     public function __CONSTRUCT()
     {
     	$this->Task_model = $this->model('Task_model');
-        $this->Validate = $this->library('Validate');
+        $this->StandardizeData = $this->library('StandardizeData');
         $this->Sesion = $this->library('sesion');
     }
 
@@ -17,15 +17,15 @@ class Task extends App {
             $tasks = $this->Task_model->getTasks();
     		$this->view('tasks', $tasks);
     		$this->view('foot');
-    	} else $this->Sesion->redirectTo();
+    	} else $this->redirectTo();
 		
     } 
 
     public function newTask()
     {
         if ($this->Sesion->isConnected()) {
-            $_POST['titulo'] = $this->Validate->removeBlankSpaces($_POST['titulo']);
-            $_POST['detalle'] = $this->Validate->removeBlankSpaces($_POST['detalle']);
+            $_POST['titulo'] = $this->StandardizeData->removeBlankSpaces($_POST['titulo']);
+            $_POST['detalle'] = $this->StandardizeData->removeBlankSpaces($_POST['detalle']);
             $id = $this->Task_model->newTask($_SESSION['ID'], $_POST['titulo'], $_POST['detalle']);
             $task = $this->Task_model->getTask($id);
             if($task) echo json_encode(array(
@@ -41,8 +41,8 @@ class Task extends App {
     public function setTask()
     {
         if ($this->Sesion->isConnected()) {
-            $_POST['titulo'] = $this->Validate->removeBlankSpaces($_POST['titulo']);
-            $_POST['detalle'] = $this->Validate->removeBlankSpaces($_POST['detalle']);
+            $_POST['titulo'] = $this->StandardizeData->removeBlankSpaces($_POST['titulo']);
+            $_POST['detalle'] = $this->StandardizeData->removeBlankSpaces($_POST['detalle']);
             $task = $this->Task_model->setTask($_POST['id'], $_POST['titulo'], $_POST['detalle'], $_POST['activo']);
             echo json_encode($task);
         } else echo json_encode(false);

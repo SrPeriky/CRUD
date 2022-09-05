@@ -15,13 +15,13 @@
 				  <label for="floatingInput">Titulo</label>
 				</div>
 				<div class="form-floating">
-				  <input type="text" class="form-control" v-model="detalles" placeholder="Detalles">
+				  <input type="text" class="form-control" v-model="detalle" placeholder="Detalles">
 				  <label for="floatingPassword">Detalles</label>
 				</div>
 	      </div>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-	        <button type="submit" @click="newTask" type="button" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+	        <button type="submit" @click="apiNewTask" type="button" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
 	      </div>
 	  		</form>
 	    </div>
@@ -62,7 +62,7 @@
 	      	</button>
 	      </td>
 	      <td class="text-center" scope="row">
-	      	<button @click="deleteTask(task.id, index)" class="btn btn-sm btn-danger">
+	      	<button @click="apiDeleteTask(task.id, index)" class="btn btn-sm btn-danger">
 	      		<i class="fa-solid fa-trash"></i>
 	      	</button>
 	      </td>
@@ -81,7 +81,7 @@
 		el: '#app',
 		data:{
 			titulo: '',
-			detalles: '',
+			detalle: '',
 			tasks: [
 			<?php foreach ($data as $task):?>
 				{id: <?php echo $task['id'];  ?>, title: '<?php echo $task['titulo'];  ?>', detalle: '<?php echo $task['detalle'];  ?>', fecha: '<?php echo $task['fecha'];  ?>', activo: <?php echo $task['activo'];  ?>, edit: 0},
@@ -89,7 +89,7 @@
 			],
 		},
 		methods:{
-			setTask (id, titulo, detalle, activo) {
+			apiSetTask (id, titulo, detalle, activo) {
 				$.ajax({
 					type: "POST",
 					mimeType: 'text/html; charset=utf-8',
@@ -100,11 +100,11 @@
 			        data: "id="+id+'&titulo='+titulo+'&detalle='+detalle+'&activo='+activo,
 			        success: function(respuesta)
 			        {
-			        	console.log("save");
+			        	
 			        }
 			    });
 			},
-			newTask () {
+			apiNewTask () {
 				$.ajax({
 					type: "POST",
 					mimeType: 'text/html; charset=utf-8',
@@ -116,26 +116,38 @@
 			        success: function(respuesta)
 			        {
 			        	if (respuesta!=null) {
-			        		app.tasks.push({
-			        			id: respuesta.id,
-								title: respuesta.titulo,
-								detalle: respuesta.detalle,
-								fecha: respuesta.fecha,
-								activo: respuesta.activo,
-								edit: 0,
-			        		});
-			        		app.titulo = '';
-							app.detalles = '';
+			        		app.newTask(respuesta);
 			        	} 
 			        }
 			    });
 			}, 
+			newTask(respuesta){
+				this.tasks.push({
+					id: respuesta.id,
+					title: respuesta.titulo,
+					detalle: respuesta.detalle,
+					fecha: respuesta.fecha,
+					activo: respuesta.activo,
+					edit: 0,
+				});
+			    this.titulo = '';
+				this.detalles = '';
+				toastr["success"]('Creada exitosamente');
+			},
+
 			editTask (id, i) {
 				console.log("editTask: "+id);
-				if (this.tasks[i].edit===1) this.setTask(this.tasks[i].id, this.tasks[i].title, this.tasks[i].detalle, this.tasks[i].activo);
+				if (this.tasks[i].edit===1) this.apiSetTask(this.tasks[i].id, this.tasks[i].title, this.tasks[i].detalle, this.tasks[i].activo);
 				this.tasks[i].edit = (this.tasks[i].edit==0) ? 1 : 0;
 			},
-			deleteTask (id, i) {
+
+			deleteTask (i) {
+				this.tasks.splice(i, 1)
+				toastr['error']('eliminada exitosamente');
+
+			},
+
+			apiDeleteTask (id, i) {
 				$.ajax({
 					type: "POST",
 					mimeType: 'text/html; charset=utf-8',
@@ -146,14 +158,14 @@
 			        data: "id="+id,
 			        success: function(respuesta)
 			        {
-			        	if(!respuesta) app.tasks.splice(i, 1);
+			        	if(!respuesta) app.deleteTask(i);
 			        }
 			    });
 			},
 			checkTask (id, i) {
 				console.log("deleteTask: "+i);
 				this.tasks[i].activo = (this.tasks[i].activo==0) ? 1 : 0;
-				this.setTask(this.tasks[i].id, this.tasks[i].title, this.tasks[i].detalle, this.tasks[i].activo);
+				this.apiSetTask(this.tasks[i].id, this.tasks[i].title, this.tasks[i].detalle, this.tasks[i].activo);
 			},
 
 		}
