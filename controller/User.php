@@ -17,40 +17,62 @@ class User extends App{
         } else $this->redirectTo('Task');;
     }
 
-    public function checkUser()
+    public function userLogIn()
     {
         if (!$this->Sesion->isConnected()) {
             $_POST['email'] = $this->StandardizeData->removeBlankSpaces($_POST['email']);
             $_POST['password'] = $this->StandardizeData->removeBlankSpaces($_POST['password']);
             $_POST['password'] = MD5($_POST['password']);
+
             if (!$this->Validate->isEmail($_POST['email'])) {
                 echo json_encode("Email incorrecto");
-            } else {
-                $user = $this->User_model->getUserActive($_POST['email'], $_POST['password']);
-                if ($user) {
-                   if(!$this->Sesion->new($user["id"])) echo json_encode("Error al crear la session");
-                   else echo json_encode(true);
-                } else echo json_encode("Usuario incorrecto");
+                return; 
             }
+
+            $user = $this->User_model->getUserActive($_POST['email'], $_POST['password']);
+
+            if (!$user) {
+                echo json_encode("Usuario incorrecto");
+                return;
+            }
+
+            if(!$this->Sesion->new($user["id"])) {
+                echo json_encode("Error al crear la session");
+                return;
+            }
+
+            echo json_encode(true);
+
         } else echo json_encode("Ya existe una session");
     }
 
-    public function checkIn()
+    public function registerUser()
     {
        if (!$this->Sesion->isConnected()) {
             $_POST['name'] = $this->StandardizeData->removeBlankSpaces($_POST['name']);
             $_POST['email'] = $this->StandardizeData->removeBlankSpaces($_POST['email']);
             $_POST['password'] = $this->StandardizeData->removeBlankSpaces($_POST['password']);
             $_POST['password'] = MD5($_POST['password']);
+
             if (!$this->Validate->isEmail($_POST['email'])) {
+                return;
                 echo json_encode("Email incorrecto");
-            } else {
-                $id_user = $this->User_model->saveUser($_POST['name'], $_POST['email'], $_POST['password']);
-                if ($id_user) {
-                   if(!$this->Sesion->new($id_user)) echo json_encode("Error al crear la session");
-                   else echo json_encode(true);
-                } else echo json_encode("Usuario incorrecto");
+            } 
+
+            $id_user = $this->User_model->saveUser($_POST['name'], $_POST['email'], $_POST['password']);
+
+            if (!$id_user) {
+                echo json_encode("Usuario no registrado");
+                return;
+            } 
+
+            if(!$this->Sesion->new($id_user)){
+                echo json_encode("Error al crear la session");
+                return;
             }
+
+            echo json_encode(true);
+
        } else $this->redirectTo('Task');
     }
 
@@ -58,7 +80,9 @@ class User extends App{
     {
         if ($this->Sesion->isConnected()) {
             $this->Sesion->logout();
-        } $this->redirectTo('user', null, true);
+            return;
+        } 
+        $this->redirectTo('user', null, true);
     }
 }
  ?>
