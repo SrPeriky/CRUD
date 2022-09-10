@@ -55,7 +55,7 @@ const app = new Vue({
   		this.password = '';
   		this.confirPassword = '';
   	}, 
-  	validMail: (email) => 
+  	isEmail: (email) => 
   		(email.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) ? 
   		true : 
   		false,
@@ -64,7 +64,7 @@ const app = new Vue({
     	this.errors = [];
     	e.preventDefault();
     	result = true;
-    	if(!this.validMail(this.email)) {
+    	if(!this.isEmail(this.email)) {
     		result = false; this.errors.push("Email is required.");
     	} 
     	if(this.password === '') { result = false; this.errors.push("Password is required.");}
@@ -76,7 +76,7 @@ const app = new Vue({
     	e.preventDefault();
     	result = true;
     	if(this.name === '') { result = false; this.errors.push("Name is required.");}
-    	if(!this.validMail(this.email)){ result = false; this.errors.push("Email is required.");}
+    	if(!this.isEmail(this.email)){ result = false; this.errors.push("Email is required.");}
     	if(this.password === '') {result = false; this.errors.push("Password is required.");}
     	if(this.password.length < 8) {result = false; this.errors.push("password requires at least 8 characters.");}
     	if(this.password !== this.confirPassword) {result = false; this.errors.push("Passwords do not match.");}
@@ -95,8 +95,11 @@ const app = new Vue({
     		processData:false,
     		dataType: 'json',
     		success: function(respuesta) {
-    			if(respuesta===true) location.href = base_url+'task';
-    			else app.errors.push(respuesta);
+    			if(respuesta === true){
+    				location.href = base_url+'task';
+    				return;
+    			}
+    			app.errors.push(respuesta);
     		},
     		error: function(jqXHR, textStatus, errorThrown) {
     			alert('ERROR');
@@ -107,13 +110,13 @@ const app = new Vue({
 
     doLogin (e) {
     	if(this.checkFormLogin(e)){
-		    this.sedAjax('checkUser', 'login');
+		    this.sedAjax('userLogIn', 'login');
     	}
     },
 
     doRegister(e){
     	if(this.checkFormdRegister(e)){
-		    this.sedAjax('checkIn', 'register');
+		    this.sedAjax('registerUser', 'register');
     	}
     }
   }
